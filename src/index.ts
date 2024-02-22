@@ -6,7 +6,7 @@ import { parsePackageJson, getLatestVersion } from './utils';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) {
 	console.log('start start activate');
 	context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(async (document) => {
 		console.log('00000', document.uri.fsPath);
@@ -52,5 +52,3 @@ function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
-
-export { activate };
