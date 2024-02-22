@@ -2,6 +2,7 @@
   "name": "vscode-package-version",
   "displayName": "vscode-package-version",
   "description": "Show all package latest version",
+  "publisher": "talljack",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.86.0"
@@ -25,12 +26,14 @@
   "scripts": {
     "dev": "pnpm build --watch",
     "build": "tsup ./src/index.ts --external vscode",
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "pnpm run build",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "publish": "vsce publish --no-dependencies",
+    "pack": "vsce package --no-dependencies"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.4",
@@ -41,6 +44,7 @@
     "@typescript-eslint/parser": "^6.19.1",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.23.0",
     "eslint": "^8.56.0",
     "eslint-plugin-json": "^3.1.0",
     "tsup": "^8.0.2",
