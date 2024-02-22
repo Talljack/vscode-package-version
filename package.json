@@ -9,19 +9,22 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "workspaceContains:package.json"
+  ],
   "main": "./dist/index.js",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-package-version.helloWorld",
-        "title": "Hello World"
+        "command": "vscode-package-version.init",
+        "title": "Find Package latest version",
+        "enablement": "resourceFilename == package.json"
       }
     ]
   },
   "scripts": {
-    "dev": "tsup src/index.ts --external vscode --watch",
-    "build": "tsup src/index.ts --external vscode",
+    "dev": "pnpm build --watch",
+    "build": "tsup ./src/index.ts --external vscode",
     "vscode:prepublish": "pnpm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
