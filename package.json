@@ -9,8 +9,8 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
+  "activationEvents": ["*"],
+  "main": "./dist/index.js",
   "contributes": {
     "commands": [
       {
@@ -20,6 +20,8 @@
     ]
   },
   "scripts": {
+    "dev": "tsup src/index.ts --external vscode --watch",
+    "build": "tsup src/index.ts --external vscode",
     "vscode:prepublish": "pnpm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
