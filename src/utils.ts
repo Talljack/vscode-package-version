@@ -20,7 +20,6 @@ async function getPackageVersion(packageName: string): Promise<string> {
   }
 }
 export function parsePackageJson(uri: vscode.Uri): PackageJsonType | null {
-  console.log("uri", uri);
   let path = uri.fsPath;
   if (/\.git/.test(uri.fsPath)) {
     path = path.replace(/\.git/g, "");

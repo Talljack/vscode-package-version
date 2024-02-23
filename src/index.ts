@@ -18,20 +18,14 @@ const PACKAGE_KEY = "dep-package";
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  const decorationType = createDecorationType();
   const getAllDependenciesLatestVersion = async (
-    allDependencies: Record<string, string>,
-    uri: vscode.Uri
+    allDependencies: Record<string, string>
   ) => {
-    const allPackageNames = Object.keys(allDependencies);
-    context.workspaceState.update(
-      `${uri.fsPath}-cachedAllPackageNames`,
-      allPackageNames
-    );
     const packageInfo: PackageInfoType = {};
     for (const [packageName, currentVersion] of Object.entries(
       allDependencies
     )) {
-      console.log("packageName", packageName);
       // package storage
       let latestVersion = context.globalState.get<string>(
         `${PACKAGE_KEY}_${packageName}`
@@ -56,10 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
         latestVersion,
         versionPatchType,
       };
-      // const regex = new RegExp(
-      //   `"${packageName}":\\s*"[^"](\\d+).(\\d+).(\\d+).*?"`,
-      //   "g"
-      // );
     }
     return packageInfo;
   };
@@ -71,7 +61,6 @@ export function activate(context: vscode.ExtensionContext) {
     const decorationsArray: vscode.DecorationOptions[] = [];
     for (const [packageName, packageInfoItem] of Object.entries(packageInfo)) {
       const { latestVersion, versionPatchType } = packageInfoItem;
-      console.log("packageName", packageName);
       const regex = new RegExp(
         `"${packageName}":\\s*"[^"](\\d+).(\\d+).(\\d+).*?"`,
         "g"
@@ -103,21 +92,22 @@ export function activate(context: vscode.ExtensionContext) {
     if (!allDependencies) {
       return;
     }
+    if (!timer) {
+      timer = setInterval(() => {
+        getAllDependenciesLatestVersion(allDependencies);
+      }, 24 * 60 * 60 * 1000);
+    }
     // 2. 读取所有依赖的 latest version
-    const packageInfo = await getAllDependenciesLatestVersion(
-      allDependencies,
-      uri
-    );
+    const packageInfo = await getAllDependenciesLatestVersion(allDependencies);
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       // 3. 构造 decorationArray
-      const decorationType = createDecorationType();
       const decorationsArray = await createDecorationArray(
         document,
         packageInfo,
         uri
       );
-
+      editor.setDecorations(decorationType, []);
       editor.setDecorations(decorationType, decorationsArray!);
     }
   };
@@ -132,7 +122,6 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.createFileSystemWatcher("**/package.json");
 
   packageJsonWatcher.onDidChange(async (uri) => {
-    console.log(`package.json changed: ${uri.fsPath}`);
     await updateDependencies(uri);
   });
   context.subscriptions.push(packageJsonWatcher);
