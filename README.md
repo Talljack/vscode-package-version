@@ -19,3 +19,6 @@ For more changelog info please see [CHANGELOG](./CHANGELOG.md) docs.
 ## License
 
 [MIT](./LICENSE) License © 2024 [Talljack](https://github.com/talljack)
+
+## TODO
+- [ ] add user config about the auto show or command to show dependencies latest version.
