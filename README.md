@@ -12,7 +12,7 @@ Auto shows all package.json dependencies' latest version
 
 ## CHANGELOG
 
-更多的更新日志请查看 [CHANGELOG](./CHANGELOG.md)
+For more changelog info please see [CHANGELOG](./CHANGELOG.md) docs.
 
 ## License
 
