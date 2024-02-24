@@ -7,6 +7,10 @@
   "engines": {
     "vscode": "^1.86.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Talljack/vscode-package-version.git"
+  },
   "categories": [
     "Programming Languages",
     "Snippets"
