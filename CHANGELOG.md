@@ -1,9 +1,10 @@
 # Change Log
 
-All notable changes to the "vscode-package-version" extension will be documented in this file.
+## 0.0.1
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Features
 
-## [Unreleased]
-
-- Initial release
+- storage package latest version.
+- show dependencies and devDependencies latest version decoration.
+- add patch type of `major`、`minor`、`patch` by diff current version with latest version.
+- watch `package.json` change and update decoration.
