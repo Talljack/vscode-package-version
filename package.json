@@ -1,16 +1,27 @@
 {
   "name": "vscode-package-version",
-  "displayName": "vscode-package-version",
+  "displayName": "Show all package dependencies' latest version",
   "description": "Show all package dependencies' latest version",
   "publisher": "talljack",
-  "version": "0.1.0",
+  "private": "true",
+  "packageManager": "pnpm@8.15.3",
+  "author": "Talljack<yugang.cao12@gmail.com>",
+  "homepage": "https://github.com/Talljack",
+  "version": "0.1.1",
   "engines": {
-    "vscode": "^1.86.0"
+    "vscode": "^1.80.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Talljack/vscode-package-version.git"
   },
+  "bugs": {
+    "url": "https://github.com/Talljack/vscode-package-version.git/issues"
+  },
+  "icon": "resource/icon.png",
+  "files": [
+    "dist"
+  ],
   "categories": [
     "Programming Languages",
     "Snippets"
