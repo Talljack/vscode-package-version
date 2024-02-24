@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.1
+
+### Fixes
+
+- extension compatibility of old vscode version before 1.80.0 and update extension icon.
+
 ## 0.1.0
 
 ### Features
