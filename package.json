@@ -3,7 +3,7 @@
   "displayName": "vscode-package-version",
   "description": "Show all package dependencies' latest version",
   "publisher": "talljack",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.86.0"
   },
