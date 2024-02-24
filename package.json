@@ -1,14 +1,15 @@
 {
   "name": "vscode-package-version",
   "displayName": "vscode-package-version",
-  "description": "Show all package latest version",
+  "description": "Show all package dependencies' latest version",
   "publisher": "talljack",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.86.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Snippets"
   ],
   "activationEvents": [
     "workspaceContains:package.json"
