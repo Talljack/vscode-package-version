@@ -8,7 +8,9 @@
 
 Auto shows all package.json dependencies' latest version
 
-![showPackageVersion](./resource/image.png)
+<p align="center">
+  <img src="./resource/image.png"/>
+</p>
 
 ## CHANGELOG
 
