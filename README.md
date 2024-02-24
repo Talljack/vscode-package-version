@@ -12,6 +12,10 @@ Auto shows all package.json dependencies' latest version
   <img src="./resource/image.png"/>
 </p>
 
+## How to use
+
+when you open the package.json file, the extension will auto-execute and get all dependencies latest version.
+
 ## CHANGELOG
 
 For more changelog info please see [CHANGELOG](./CHANGELOG.md) docs.
