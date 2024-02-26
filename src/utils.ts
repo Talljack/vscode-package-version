@@ -2,23 +2,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import * as https from "https";
-import { promisify } from "util";
-import { exec as execCallback } from "child_process";
 import type { PackageJsonType, VersionDifference } from "./type";
 
-// 将 exec 转换为返回 Promise 的版本
-const exec = promisify(execCallback);
-
-async function getPackageVersion(packageName: string): Promise<string> {
-  try {
-    const { stdout } = await exec(`npm view ${packageName} version`);
-    return stdout.trim(); // 使用 trim() 来去除可能的换行符
-  } catch (error) {
-    // 错误处理
-    console.error(`Error fetching package version: ${error}`);
-    throw error; // 或者返回一个默认值/错误值
-  }
-}
 export function parsePackageJson(uri: vscode.Uri): PackageJsonType | null {
   let path = uri.fsPath;
   if (/\.git/.test(uri.fsPath)) {
@@ -99,15 +84,6 @@ export const packageVersionColorMap: Record<VersionDifference, string> = {
   patch: "#18a058",
   none: "#2080f0",
   invalid: "#999",
-};
-
-export const allHasCached = (
-  cachedAllPackageNames: string[],
-  latestAllPackageNames: string[]
-) => {
-  return latestAllPackageNames.every((item) =>
-    cachedAllPackageNames.includes(item)
-  );
 };
 
 export const createDecorationType = () => {
