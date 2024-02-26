@@ -6,7 +6,6 @@ import {
   compareVersions,
   packageVersionColorMap,
   getLatestVersion,
-  allHasCached,
   createDecorationType,
   readPackageJsonDependencies,
 } from "./utils";
