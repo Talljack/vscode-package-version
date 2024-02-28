@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import * as path from "path";
+import * as fs from "fs";
 import {
   compareVersions,
   packageVersionColorMap,
@@ -18,8 +19,16 @@ const PACKAGE_KEY = "dep-package";
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   const decorationType = createDecorationType();
+  const updateLatestPackageVersion = (uri: vscode.Uri) => {
+    const allDependencies = readPackageJsonDependencies(uri);
+    if (!allDependencies) {
+      return;
+    }
+    getAllDependenciesLatestVersion(allDependencies, true);
+  };
   const getAllDependenciesLatestVersion = async (
-    allDependencies: Record<string, string>
+    allDependencies: Record<string, string>,
+    update = false
   ) => {
     const packageInfo: PackageInfoType = {};
     for (const [packageName, currentVersion] of Object.entries(
@@ -29,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
       let latestVersion = context.globalState.get<string>(
         `${PACKAGE_KEY}_${packageName}`
       );
-      if (!latestVersion) {
+      if (!latestVersion || update) {
         latestVersion = await getLatestVersion(packageName);
         context.globalState.update(
           `${PACKAGE_KEY}_${packageName}`,
@@ -37,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
       }
       // private npm
-      if (!latestVersion) {
+      if (!latestVersion || update) {
         continue;
       }
       const versionPatchType = compareVersions(
@@ -91,11 +100,6 @@ export function activate(context: vscode.ExtensionContext) {
     if (!allDependencies) {
       return;
     }
-    if (!timer) {
-      timer = setInterval(() => {
-        getAllDependenciesLatestVersion(allDependencies);
-      }, 24 * 60 * 60 * 1000);
-    }
     // 2. 读取所有依赖的 latest version
     const packageInfo = await getAllDependenciesLatestVersion(allDependencies);
     const editor = vscode.window.activeTextEditor;
@@ -117,6 +121,23 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+  // 自动定时器更新 package version
+  timer = setInterval(async () => {
+    const folders = vscode.workspace.workspaceFolders;
+    if (!folders) {
+        console.log('No workspace folder found.');
+        return;
+    }
+
+    const rootPath = folders[0].uri; // 获取第一个工作区的路径
+    const packageJsonUri = vscode.Uri.joinPath(rootPath, 'package.json');
+    if (!fs.existsSync(packageJsonUri.fsPath)) {
+      return;
+    }
+    console.log('interval update latest package version');
+    await updateLatestPackageVersion(packageJsonUri);
+    // 每 10 分钟更新一次
+  }, 1000 * 60 * 10);
   const packageJsonWatcher =
     vscode.workspace.createFileSystemWatcher("**/package.json");
 
