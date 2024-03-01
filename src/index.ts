@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
       }
       // private npm
-      if (!latestVersion || update) {
+      if (!latestVersion) {
         continue;
       }
       const versionPatchType = compareVersions(
@@ -93,7 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     return decorationsArray;
   };
-  const updateDependencies = async (uri: vscode.Uri) => {
+  const updateDependencies = async (uri: vscode.Uri, update = false) => {
     const document = await vscode.workspace.openTextDocument(uri);
     // 1. 读取 allDependencies
     const allDependencies = readPackageJsonDependencies(uri);
@@ -101,7 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
     // 2. 读取所有依赖的 latest version
-    const packageInfo = await getAllDependenciesLatestVersion(allDependencies);
+    const packageInfo = await getAllDependenciesLatestVersion(
+      allDependencies,
+      update
+    );
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       // 3. 构造 decorationArray
@@ -125,19 +128,18 @@ export function activate(context: vscode.ExtensionContext) {
   timer = setInterval(async () => {
     const folders = vscode.workspace.workspaceFolders;
     if (!folders) {
-        console.log('No workspace folder found.');
-        return;
+      console.log("No workspace folder found.");
+      return;
     }
 
     const rootPath = folders[0].uri; // 获取第一个工作区的路径
-    const packageJsonUri = vscode.Uri.joinPath(rootPath, 'package.json');
+    const packageJsonUri = vscode.Uri.joinPath(rootPath, "package.json");
     if (!fs.existsSync(packageJsonUri.fsPath)) {
       return;
     }
-    console.log('interval update latest package version');
     await updateLatestPackageVersion(packageJsonUri);
-    // 每 10 分钟更新一次
-  }, 1000 * 60 * 10);
+    // 每 5 分钟更新一次
+  }, 1000 * 60 * 5);
   const packageJsonWatcher =
     vscode.workspace.createFileSystemWatcher("**/package.json");
 
