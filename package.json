@@ -7,7 +7,7 @@
   "packageManager": "pnpm@8.15.3",
   "author": "Talljack<yugang.cao12@gmail.com>",
   "homepage": "https://github.com/Talljack",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -26,7 +26,9 @@
     "Programming Languages",
     "Snippets"
   ],
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/index.js",
   "contributes": {
     "commands": [
