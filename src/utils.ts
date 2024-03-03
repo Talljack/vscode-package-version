@@ -55,7 +55,7 @@ export function compareVersions(
   version1: string,
   version2: string
 ): VersionDifference {
-  const semverRegex = /(\^|~)?(\d+)\.(\d+)\.(\d+)/;
+  const semverRegex = /(\^|~)?(\d+)\.(\d+)\.(\d+)(-.*)?/;
   if (version1.length === 1) {
     version1 += ".0.0";
   }
@@ -65,10 +65,10 @@ export function compareVersions(
     return "invalid";
   }
 
-  const v1Parts = version1.match(semverRegex)!.slice(2).map(Number);
-  const v2Parts = version2.match(semverRegex)!.slice(2).map(Number);
+  const v1Parts = version1.match(semverRegex)!.slice(2, 5).map(Number);
+  const v2Parts = version2.match(semverRegex)!.slice(2, 5).map(Number);
   // 比较 major、minor 和 patch 数字
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     if (v1Parts[i] !== v2Parts[i]) {
       return ["major", "minor", "patch"][i] as VersionDifference;
     }

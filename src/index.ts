@@ -12,25 +12,24 @@ import {
 } from "./utils";
 import type { PackageInfoType } from "./type";
 
-let timer: NodeJS.Timeout;
 const PACKAGE_KEY = "dep-package";
+let packageCountRecord: Record<string, number> = {};
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   const decorationType = createDecorationType();
-  const updateLatestPackageVersion = (uri: vscode.Uri) => {
-    const allDependencies = readPackageJsonDependencies(uri);
-    if (!allDependencies) {
-      return;
-    }
-    getAllDependenciesLatestVersion(allDependencies, true);
-  };
   const getAllDependenciesLatestVersion = async (
     allDependencies: Record<string, string>,
+    uri: vscode.Uri,
     update = false
   ) => {
     const packageInfo: PackageInfoType = {};
+    if (!packageCountRecord?.[uri.fsPath]) {
+      packageCountRecord[uri.fsPath] = 1;
+    } else {
+      packageCountRecord[uri.fsPath]++;
+    }
     for (const [packageName, currentVersion] of Object.entries(
       allDependencies
     )) {
@@ -93,18 +92,11 @@ export function activate(context: vscode.ExtensionContext) {
     }
     return decorationsArray;
   };
-  const updateDependencies = async (uri: vscode.Uri, update = false) => {
+  const renderDecoration = async (
+    uri: vscode.Uri,
+    packageInfo: PackageInfoType
+  ) => {
     const document = await vscode.workspace.openTextDocument(uri);
-    // 1. 读取 allDependencies
-    const allDependencies = readPackageJsonDependencies(uri);
-    if (!allDependencies) {
-      return;
-    }
-    // 2. 读取所有依赖的 latest version
-    const packageInfo = await getAllDependenciesLatestVersion(
-      allDependencies,
-      update
-    );
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       // 3. 构造 decorationArray
@@ -117,6 +109,23 @@ export function activate(context: vscode.ExtensionContext) {
       editor.setDecorations(decorationType, decorationsArray!);
     }
   };
+  const updateDependencies = async (uri: vscode.Uri, update = false) => {
+    // 1. 读取 allDependencies
+    const allDependencies = readPackageJsonDependencies(uri);
+    if (!allDependencies) {
+      return;
+    }
+    // 2. 读取所有依赖的 latest version
+    const packageInfo = await getAllDependenciesLatestVersion(
+      allDependencies,
+      uri,
+      update
+    );
+    renderDecoration(uri, packageInfo);
+    if (packageCountRecord[uri.fsPath] === 1) {
+      updateDependencies(uri, true);
+    }
+  };
   context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(async (document) => {
       if (path.basename(document.uri.fsPath).includes("package.json")) {
@@ -124,24 +133,16 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-  // 自动定时器更新 package version
-  timer = setInterval(async () => {
-    const folders = vscode.workspace.workspaceFolders;
-    if (!folders) {
-      console.log("No workspace folder found.");
-      return;
-    }
 
-    const rootPath = folders[0].uri; // 获取第一个工作区的路径
-    const packageJsonUri = vscode.Uri.joinPath(rootPath, "package.json");
-    if (!fs.existsSync(packageJsonUri.fsPath)) {
-      return;
-    }
-    await updateLatestPackageVersion(packageJsonUri);
-    // 每 5 分钟更新一次
-  }, 1000 * 60 * 5);
-  const packageJsonWatcher =
-    vscode.workspace.createFileSystemWatcher("**/package.json");
+  // 获取工作区根目录路径
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) {
+    return; // 确保工作区不为空
+  }
+  const rootPath = workspaceFolders[0].uri.fsPath;
+  const packageJsonWatcher = vscode.workspace.createFileSystemWatcher(
+    `${rootPath}/package.json`
+  );
 
   packageJsonWatcher.onDidChange(async (uri) => {
     await updateDependencies(uri);
