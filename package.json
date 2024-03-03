@@ -4,10 +4,10 @@
   "description": "Show all package dependencies' latest version",
   "publisher": "talljack",
   "private": "true",
-  "packageManager": "pnpm@8.15.3",
+  "packageManager": "pnpm@8.15.4",
   "author": "Talljack<yugang.cao12@gmail.com>",
   "homepage": "https://github.com/Talljack",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "engines": {
     "vscode": "^1.80.0"
   },

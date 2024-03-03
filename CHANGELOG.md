@@ -1,10 +1,16 @@
 # Change Log
 
+## 0.1.3
+
+### Fixes
+
+- Use cache when you first enter the package.json file and then immediately call the interface to get the new version and update.
+
 ## 0.1.2
 
 ### Fixes
 
-- Storage package latest version does't update
+- Storage package latest version does't update.
 
 ## 0.1.1
 
